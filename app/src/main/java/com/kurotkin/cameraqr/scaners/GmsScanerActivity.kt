@@ -1,36 +1,36 @@
-package com.kurotkin.cameraqr
+package com.kurotkin.cameraqr.scaners
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
-import com.google.android.gms.vision.Detector.Detections
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
+import com.kurotkin.cameraqr.R
 import java.io.IOException
 
-
-class MainActivity : AppCompatActivity() {
+class GmsScanerActivity : AppCompatActivity() {
 
     private lateinit var barcodeDetector: BarcodeDetector
     private lateinit var cameraSource: CameraSource
     private lateinit var cameraView: SurfaceView
-    private lateinit var barcodeValue: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+        setContentView(R.layout.activity_gms_scaner)
         cameraView = findViewById<SurfaceView>(R.id.surface_view)
-        barcodeValue = findViewById<TextView>(R.id.barcode_value)
+        scan()
+    }
 
+    fun scan(){
         barcodeDetector = BarcodeDetector.Builder(this)
             .setBarcodeFormats(Barcode.ALL_FORMATS)
             .build()
@@ -65,14 +65,15 @@ class MainActivity : AppCompatActivity() {
 
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
-                TODO("Not yet implemented")
+
             }
 
-            override fun receiveDetections(detections: Detections<Barcode>?) {
+            override fun receiveDetections(detections: Detector.Detections<Barcode>?) {
                 val barcodes: SparseArray<Barcode>? = detections?.getDetectedItems()
                 if (barcodes?.size() != 0) {
-                    barcodeValue.post {
-                        barcodeValue.text = barcodes?.valueAt(0)?.displayValue
+                    val code = barcodes?.valueAt(0)?.displayValue
+                    code?.let {
+                        scanResult(it)
                     }
                 }
             }
@@ -80,12 +81,16 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun scanResult(code: String){
+        val intent = Intent()
+        intent.putExtra("code", code)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cameraSource.release()
         barcodeDetector.release()
     }
-
 }
-
-
