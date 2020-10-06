@@ -17,6 +17,7 @@ import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.google.zxing.BarcodeFormat
 import com.kurotkin.cameraqr.R
+import com.kurotkin.cameraqr.utils.VibroUtil
 
 class ZxingScanerActivity : AppCompatActivity() {
 
@@ -57,8 +58,7 @@ class ZxingScanerActivity : AppCompatActivity() {
         // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                vibro()
-                //Toast.makeText(this, "${it.text}", Toast.LENGTH_LONG).show()
+                VibroUtil.vibro()
                 scanResult(it.text)
             }
         }
@@ -80,12 +80,4 @@ class ZxingScanerActivity : AppCompatActivity() {
         finish()
     }
 
-    fun vibro(t: Long = 500){
-        val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(t, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            v.vibrate(t)
-        }
-    }
 }

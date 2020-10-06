@@ -10,6 +10,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.kurotkin.cameraqr.scaners.GmsScanerActivity
 import com.kurotkin.cameraqr.scaners.ZxingScanerActivity
 import com.kurotkin.cameraqr.utils.DateUtil
+import com.kurotkin.cameraqr.utils.VibroUtil
 import kotlinx.android.synthetic.main.activity_scaner.*
 import java.util.*
 
@@ -18,10 +19,9 @@ class ScanerActivity : AppCompatActivity() {
     companion object{
         private val LABEL = "com.kurotkin.cameraqr.ScanerActivity.text"
         private val START_DATE = "com.kurotkin.cameraqr.ScanerActivity.startDate"
-        private val SCANER = "com.kurotkin.cameraqr.ScanerActivity.scaner"
-
-        val SCANER2 = 2
-        val SCANER3 = 3
+        private val SCANER1 = IntentIntegrator.REQUEST_CODE
+        private val SCANER2 = 2
+        private val SCANER3 = 3
     }
 
     lateinit var editText: EditText
@@ -73,14 +73,14 @@ class ScanerActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         when (requestCode){
-            IntentIntegrator.REQUEST_CODE -> {
+            SCANER1 -> {
                 val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
                 if (result != null) {
                     if (result.contents == null) {
-                        Log.e("Scan*******", "Cancelled scan")
+
                     } else {
+                        VibroUtil.vibro()
                         val code : String = result.contents
                         showSaveDialog(code, "Сканер 1")
                     }

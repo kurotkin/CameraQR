@@ -15,6 +15,7 @@ import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.kurotkin.cameraqr.R
+import com.kurotkin.cameraqr.utils.VibroUtil
 import java.io.IOException
 
 class GmsScanerActivity : AppCompatActivity() {
@@ -85,6 +86,7 @@ class GmsScanerActivity : AppCompatActivity() {
         val intent = Intent()
         intent.putExtra("code", code)
         setResult(Activity.RESULT_OK, intent)
+        VibroUtil.vibro()
         finish()
     }
 
